@@ -1,31 +1,5 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="assets/img/favicon.png">
-  <title>
-    Material Dashboard 2 by Creative Tim
-  </title>
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-  <!-- Nucleo Icons -->
-  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <!-- CSS Files -->
-  <link id="pagestyle" href="assets/css/material-dashboard.css?v=3.0.4" rel="stylesheet" />
-</head>
-
-<body class="bg-gray-200">
 <?php
-  include('database/config.php');
+  include('partials/app-header.php');
   $login_email = "";
   $login_pass = "";
   $failed_error = "";
@@ -47,7 +21,7 @@
       $failed_error = "";
     } else {
       $login_pass = md5($_POST["login_pass"]);
-      $userPassGet = "SELECT * FROM user WHERE user_email = '$login_email' AND user_pass = '$login_pass'";
+      $userPassGet = "SELECT * FROM user WHERE user_email = '$login_email' AND user_pass = '$login_pass' AND user_status = 1";
       $userPassQuery = mysqli_query($conn, $userPassGet);
       $userPassArray = mysqli_fetch_array($userPassQuery, MYSQLI_ASSOC);
       $userPasscount = mysqli_num_rows($userPassQuery);
