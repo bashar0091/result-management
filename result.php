@@ -1,34 +1,12 @@
 <?php 
+  session_start();
+
+  if($_SESSION['session_email'] == TRUE) {} else {
+    header('location: login.php');
+  }
+  
   include('partials/app-header.php');
   include('partials/dashboard-sidebar.php');
-
-  function abc($a) {
-    if($a > 79 && $a < 101){
-        return 5;
-      } else if ($a > 100) {
-        return 0;
-      } else if($a > 74) {
-        return 4.5;
-      } else if($a > 69) {
-        return 4;
-      } else if ( $a > 64) {
-        return 3.5;
-      } else if ($a > 59) {
-        return 3;
-      } else if ($a > 54) {
-        return 2.5;
-      } else if ($a > 49) {
-        return 2;
-      } else if ($a > 44) {
-        return 1.5;
-      } else if ($a < 45) {
-        return 0;
-      } else {
-        return 0;
-      }
-  }
-
-  echo ( abc (80) + abc(78) ) / 2;
 ?>
   
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -66,24 +44,45 @@
                         </tr>
                     </thead>
                     <tbody>
+                      <?php
+                        $getResultInfo = "SELECT * FROM result";
+                        $getResultQuery = mysqli_query($conn, $getResultInfo);
+
+                        foreach($getResultQuery as $getResult) {
+                      ?>
                         <tr>
                         <td class="p-3">
-                            <h6 class="text-sm mb-0">Shona Khan</h6>
+                            <h6 class="text-sm mb-0"><?php echo $getResult['stud_name']?></h6>
                         </td>
                         <td class="p-3">
-                            <p class="text-sm mb-0">20011</p>
+                            <p class="text-sm mb-0"><?php echo $getResult['stud_roll']?></p>
                         </td>
                         <td class="p-3">
-                            <p class="text-sm mb-0">1923598</p>
+                            <p class="text-sm mb-0"><?php echo $getResult['stud_reg']?></p>
                         </td>
                         <td class="p-3">
                             <p class="text-sm mb-0">CSE</p>
                         </td>
                         <td class="p-3">
-                            <span class="badge badge-sm bg-gradient-danger">3.50</span>
+                          <p class="text-sm mb-0"><?php echo number_format((float)$getResult['stud_grade'], 2)?></p>
+                            <span class="badge badge-sm bg-gradient-danger"></span>
                         </td>
                         <td class="p-3">
-                            <span class="badge badge-sm bg-gradient-danger">pass</span>
+                          <?php 
+                            if($getResult['stud_stand'] == "Pass") {
+                          ?>
+                            <span class="badge badge-sm bg-gradient-success"><?php echo $getResult['stud_stand']?></span>
+                          <?php
+                            }
+                          ?>
+
+                          <?php 
+                            if($getResult['stud_stand'] == "Fail") {
+                          ?>
+                            <span class="badge badge-sm bg-gradient-danger"><?php echo $getResult['stud_stand']?></span>
+                          <?php
+                            }
+                          ?>
                         </td>
                         <td class="p-3">
                           <a href="javascript:;" class="badge badge-sm bg-gradient-info" data-toggle="tooltip" data-original-title="Edit user">
@@ -91,6 +90,7 @@
                           </a>
                         </td>
                         </tr>
+                      <?php }?>
                     </tbody>
                     </table>
                 </div>

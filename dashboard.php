@@ -1,4 +1,10 @@
 <?php 
+  session_start();
+
+  if($_SESSION['session_email'] == TRUE) {} else {
+    header('location: login.php');
+  }
+  
   include('partials/app-header.php');
   include('partials/dashboard-sidebar.php');
 ?>

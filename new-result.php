@@ -1,6 +1,68 @@
 <?php 
+  session_start();
+
+  if($_SESSION['session_email'] == TRUE) {} else {
+    header('location: login.php');
+  }
+  
   include('partials/app-header.php');
   include('partials/dashboard-sidebar.php');
+
+  function markGpa($passingMark) {
+    if($passingMark > 79 && $passingMark < 101){
+        return 5;
+      } else if ($passingMark > 100) {
+        return 0;
+      } else if($passingMark > 74) {
+        return 4.5;
+      } else if($passingMark > 69) {
+        return 4;
+      } else if ( $passingMark > 64) {
+        return 3.5;
+      } else if ($passingMark > 59) {
+        return 3;
+      } else if ($passingMark > 54) {
+        return 2.5;
+      } else if ($passingMark > 49) {
+        return 2;
+      } else if ($passingMark > 44) {
+        return 1.5;
+      } else if ($passingMark < 45) {
+        return 0;
+      } else {
+        return 0;
+      }
+  }
+
+  function markGpa2($passingMark = 0) {
+    if($passingMark > 79 && $passingMark < 101){
+        return 5;
+      } else if ($passingMark > 100) {
+        return 0;
+      } else if($passingMark > 74) {
+        return 4.5;
+      } else if($passingMark > 69) {
+        return 4;
+      } else if ( $passingMark > 64) {
+        return 3.5;
+      } else if ($passingMark > 59) {
+        return 3;
+      } else if ($passingMark > 54) {
+        return 2.5;
+      } else if ($passingMark > 49) {
+        return 2;
+      } else if ($passingMark > 44) {
+        return 1.5;
+      } else if ($passingMark < 45) {
+        return 0;
+      } else {
+        return 0;
+      }
+  }
+
+  // if(markGpa())
+
+  // echo (markGpa2(80) + markGpa2(80))/2;
 
   if(isset($_POST['result_sub'])) {
     $stud_name = $_POST['stud_name'];
@@ -16,14 +78,30 @@
     $sub_softDev = $_POST['sub_softDev'];
     $sub_bussOrg = $_POST['sub_bussOrg'];
 
+    $stud_stand = "";
+    $totalMark = "";
+
+    if($sub_java < 45 || $sub_cs < 45 || $sub_dataSt < 45 || $sub_webDev < 45 || $sub_dbM < 45 || $sub_ecomM < 45 || $sub_softDev < 45 || $sub_bussOrg < 45) {
+      $totalMark = 0;
+    } else {
+      $totalMark = ( markGpa($sub_java) + markGpa($sub_cs) + markGpa($sub_dataSt) + markGpa($sub_webDev) + markGpa($sub_dbM) + markGpa($sub_ecomM) + markGpa($sub_softDev) + markGpa($sub_bussOrg) ) / 8 ;
+    }
+    
+    if($totalMark < 1.5) {
+      $stud_stand = "Fail";
+    } else {
+      $stud_stand = "Pass";
+    }
+
     if( empty($stud_name) && empty($stud_roll) && empty($stud_reg) && empty($sub_java) && empty($sub_cs) && empty($sub_dataSt) && empty($sub_webDev) && empty($sub_dbM) && empty($sub_ecomM) && empty($sub_softDev) && empty($sub_bussOrg) ) {
       
     } else {
+
       $studInsert = "INSERT INTO student(stud_name, stud_roll, stud_reg) 
       VALUES ('$stud_name', $stud_roll, $stud_reg)";
 
-      $resultInsert = "INSERT INTO result(stud_roll, sub_java, sub_cs, sub_dataSt, sub_webDev, sub_dbM, sub_ecomM, sub_softDev, sub_bussOrg) 
-      VALUES ($stud_roll, $sub_java, $sub_cs, $sub_dataSt, $sub_webDev, $sub_dbM, $sub_ecomM, $sub_softDev, $sub_bussOrg)";
+      $resultInsert = "INSERT INTO result(stud_name, stud_roll, stud_reg, sub_java, sub_cs, sub_dataSt, sub_webDev, sub_dbM, sub_ecomM, sub_softDev, sub_bussOrg, stud_grade, stud_stand) 
+      VALUES ('$stud_name', $stud_roll, $stud_reg, $sub_java, $sub_cs, $sub_dataSt, $sub_webDev, $sub_dbM, $sub_ecomM, $sub_softDev, $sub_bussOrg, $totalMark, '$stud_stand')";
 
       mysqli_query($conn, $studInsert);
       mysqli_query($conn, $resultInsert);

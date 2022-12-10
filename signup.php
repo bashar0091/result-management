@@ -1,5 +1,10 @@
 <?php
+  session_start();
+  if(isset($_SESSION['session_email']) == true) {
+    header('location: dashboard.php');
+  }
   include("partials/app-header.php");
+  include("partials/header/home-header.php");
   
   $user_fname = "";
   $user_lname = "";
@@ -65,24 +70,24 @@
   }
 ?>
 
-  <main class="main-content  mt-0">
+  <main class="main-content mt-5 pt-5">
     <section>
       <div class="page-header min-vh-100">
         <div class="container">
           <div class="row">
             <div class="col-12 col-xl-3"></div>
             <div class="col-12 col-xl-6">
-              <div class="card card-plain">
-                <div class="card-header">
+              <div class="card card-plain bg-white">
+                <div class="card-header pb-0">
                   <h4 class="font-weight-bolder">Sign Up</h4>
                   <p class="mb-0">Enter your email and password to register</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body pt-0">
                   <form role="form" action="signup.php" method="post">
                     <p style="color: red;"><?php echo  $failed_error;?></p>
                     <div class="input-group input-group-outline mb-3">
                       <label class="form-label">First Name</label>
-                      <input type="text" class="form-control"  name="user_fname">
+                      <input type="text" class="form-control" name="user_fname" onfocus="focused(this)" onfocusout="defocused(this)">
                     </div>
                     <p style="color: red;"><?php errorText($user_fname, "First Name");?></p>
 
@@ -145,24 +150,5 @@
       </div>
     </section>
   </main>
-  <!--   Core JS Files   -->
-  <script src="assets/js/core/popper.min.js"></script>
-  <script src="assets/js/core/bootstrap.min.js"></script>
-  <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="assets/js/material-dashboard.min.js?v=3.0.4"></script>
-</body>
-
-</html>
+  
+<?php include('partials/app-footer.php');?>
