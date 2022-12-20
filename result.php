@@ -7,6 +7,11 @@
   
   include('partials/app-header.php');
   include('partials/dashboard-sidebar.php');
+
+  if(isset($_POST['result_edit_submit'])) {
+    $_SESSION['result_edit_id'] = $_POST['result_id'];
+    header('location: result-edit.php');
+  }
 ?>
   
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -85,9 +90,10 @@
                           ?>
                         </td>
                         <td class="p-3">
-                          <a href="javascript:;" class="badge badge-sm bg-gradient-info" data-toggle="tooltip" data-original-title="Edit user">
-                            Edit
-                          </a>
+                          <form action="result.php" method="post">
+                            <input type="hidden" name="result_id" value="<?php echo $getResult['id']?>">
+                            <button type="submit" name="result_edit_submit" class="border-0 badge badge-sm bg-gradient-info">Edit</button>
+                          </form>
                         </td>
                         </tr>
                       <?php }?>

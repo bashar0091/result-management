@@ -37,7 +37,7 @@
         $_SESSION['result_reg'] = $result_reg;
         header('location: result-show.php');
       } else {
-        $failed_error = "Username & Password dosen't match";
+        $failed_error = "Roll & Registration dosen't match";
       }
     }  
   }

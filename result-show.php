@@ -29,10 +29,10 @@
   }
 
   function markStand($passingMark) {
-    if($passingMark < 1.5) {
-        return "Fail";
+    if(markGpa($passingMark) < 1.5) {
+        return "<span class='badge badge-sm bg-gradient-danger'>Fail</span>";
     } else{
-        return "Pass";
+        return "<span class='badge badge-sm bg-gradient-success'>Pass</span>";
     }
   }
   
@@ -102,7 +102,7 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_java']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_java'])?></span>
+                                <?php echo markStand($get_result['sub_java'])?>
                             </td>
                         </tr>
                         
@@ -117,10 +117,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_cs']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_cs'])?></span>
+                                <?php echo markStand($get_result['sub_cs'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Data Structure</h6>
@@ -132,10 +132,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_dataSt']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_dataSt'])?></span>
+                                <?php echo markStand($get_result['sub_dataSt'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Web Development</h6>
@@ -147,10 +147,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_webDev']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_webDev'])?></span>
+                                <?php echo markStand($get_result['sub_webDev'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Database Management</h6>
@@ -162,10 +162,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_dbM']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_dbM'])?></span>
+                                <?php echo markStand($get_result['sub_dbM'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Ecommerce Management</h6>
@@ -177,10 +177,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_ecomM']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_ecomM'])?></span>
+                                <?php echo markStand($get_result['sub_ecomM'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Software Development</h6>
@@ -192,10 +192,10 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_softDev']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_softDev'])?></span>
+                                <?php echo markStand($get_result['sub_softDev'])?>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0">Businees Organization</h6>
@@ -207,22 +207,38 @@
                                 <p class="text-sm mb-0"><?php echo markGpa($get_result['sub_bussOrg']);?></p>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo markStand($get_result['sub_bussOrg'])?></span>
+                                <?php echo markStand($get_result['sub_bussOrg'])?>
                             </td>   
                         </tr>
-
+                        
                         <tr>
                             <td class="p-3">
                                 <h6 class="text-sm mb-0"></h6>
                             </td>
                             <td class="p-3">
-                                <h5 class="text-sm mb-0">140</h5>
+                                <h5 class="text-sm mb-0">
+                                <?php echo $get_result['sub_java']+$get_result['sub_cs']+$get_result['sub_dataSt']+$get_result['sub_webDev']+$get_result['sub_dbM']+$get_result['sub_ecomM']+$get_result['sub_softDev']+$get_result['sub_bussOrg'] ?>
+                                </h5>
                             </td>
                             <td class="p-3">
-                                <h5 class="text-sm mb-0"><?php echo $get_result['stud_grade'];?></h5>
+                                <h5 class="text-sm mb-0"><?php echo number_format((float)$get_result['stud_grade'], 2);?></h5>
                             </td>
                             <td class="p-3">
-                                <span class="badge badge-sm bg-gradient-success"><?php echo $get_result['stud_stand'];?></span>
+                            <?php 
+                                if($get_result['stud_stand'] == "Pass") {
+                            ?>
+                                <span class="badge badge-sm bg-gradient-success"><?php echo $get_result['stud_stand']?></span>
+                            <?php
+                                }
+                            ?>
+
+                            <?php 
+                                if($get_result['stud_stand'] == "Fail") {
+                            ?>
+                                <span class="badge badge-sm bg-gradient-danger"><?php echo $get_result['stud_stand']?></span>
+                            <?php
+                                }
+                            ?>
                             </td>
                         </tr>
                     </tbody>

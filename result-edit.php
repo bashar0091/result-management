@@ -8,6 +8,12 @@
   include('partials/app-header.php');
   include('partials/dashboard-sidebar.php');
 
+  $resultEditIdGet = $_SESSION['result_edit_id'];
+
+  if($resultEditIdGet == TRUE){} else {
+    header('location: result.php');
+  }
+
   function markGpa($passingMark) {
     if($passingMark > 79 && $passingMark < 101){
         return 5;
@@ -60,7 +66,18 @@
       }
   }
 
-  if(isset($_POST['result_sub'])) {
+  $resultEditDb = "SELECT * FROM result WHERE id = $resultEditIdGet";
+  $resultEditQuery = mysqli_query($conn, $resultEditDb);
+  $resultEditArray = mysqli_fetch_array($resultEditQuery, MYSQLI_ASSOC);
+
+  if(isset($_POST['result_subDel'])) {
+    $result_subDelDb = "DELETE FROM result WHERE id = $resultEditIdGet";
+    mysqli_query($conn, $result_subDelDb);
+    unset($_SESSION['result_edit_id']);
+    header('location: result.php');
+  }
+
+  if(isset($_POST['result_subUpdate'])) {
     $stud_name = $_POST['stud_name'];
     $stud_roll = $_POST['stud_roll'];
     $stud_reg = $_POST['stud_reg'];
@@ -89,21 +106,18 @@
       $stud_stand = "Pass";
     }
 
-    if( empty($stud_name) && empty($stud_roll) && empty($stud_reg) && empty($sub_java) && empty($sub_cs) && empty($sub_dataSt) && empty($sub_webDev) && empty($sub_dbM) && empty($sub_ecomM) && empty($sub_softDev) && empty($sub_bussOrg) ) {
-      
-    } else {
+    $studInsert = "UPDATE student 
+    SET stud_name = '$stud_name', stud_roll = $stud_roll, stud_reg = $stud_reg
+    WHERE id = $resultEditIdGet" ;
 
-      $studInsert = "INSERT INTO student(stud_name, stud_roll, stud_reg) 
-      VALUES ('$stud_name', $stud_roll, $stud_reg)";
+    $resultInsert = "UPDATE result
+    SET stud_name = '$stud_name', stud_roll = $stud_roll, stud_reg = $stud_reg, sub_java = $sub_java, sub_cs = $sub_cs, sub_dataSt = $sub_dataSt, sub_webDev = $sub_webDev, sub_dbM = $sub_dbM, sub_ecomM = $sub_ecomM, sub_softDev = $sub_softDev, sub_bussOrg = $sub_bussOrg, stud_grade = $totalMark, stud_stand = '$stud_stand'
+    WHERE id =$resultEditIdGet ";
 
-      $resultInsert = "INSERT INTO result(stud_name, stud_roll, stud_reg, sub_java, sub_cs, sub_dataSt, sub_webDev, sub_dbM, sub_ecomM, sub_softDev, sub_bussOrg, stud_grade, stud_stand) 
-      VALUES ('$stud_name', $stud_roll, $stud_reg, $sub_java, $sub_cs, $sub_dataSt, $sub_webDev, $sub_dbM, $sub_ecomM, $sub_softDev, $sub_bussOrg, $totalMark, '$stud_stand')";
-
-      mysqli_query($conn, $studInsert);
-      mysqli_query($conn, $resultInsert);
-
-      header('location: result.php');
-    }
+    mysqli_query($conn, $studInsert);
+    mysqli_query($conn, $resultInsert);
+    unset($_SESSION['result_edit_id']);
+    header('location: result.php');
   }
 ?>
   
@@ -112,7 +126,7 @@
     <?php include('partials/header/dashboard-header.php');?>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-      <form action="new-result.php" method="post">
+      <form action="result-edit.php" method="post">
         <div class="row">
             <div class="col-12">
               <div class="card my-4">
@@ -120,10 +134,11 @@
                 <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                     <div class="row align-items-center px-3">
                     <div class="col-6 d-flex align-items-center">
-                    <h6 class="text-white text-capitalize">New Result</h6>
+                    <h6 class="text-white text-capitalize">Edit <?php echo $resultEditArray['stud_name']?> Result</h6>
                     </div>
                     <div class="col-6 text-end">
-                        <button type="submit" name="result_sub" class="btn bg-gradient-info mb-0">Add New</button>
+                        <button type="submit" name="result_subDel" class="btn bg-gradient-success mb-0">Delete</button>
+                        <button type="submit" name="result_subUpdate" class="btn bg-gradient-info mb-0">Update</button>
                     </div>
                     </div>
                 </div>
@@ -132,20 +147,17 @@
                   <div class="row">
                     <div class="col-md-4">
                       <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Student Name</label>
-                        <input type="text" class="form-control" name="stud_name" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        <input type="text" class="form-control" name="stud_name" value="<?php echo $resultEditArray['stud_name']?>" placeholder="Student Name">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Roll No</label>
-                        <input type="number" class="form-control" name="stud_roll" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        <input type="number" class="form-control" name="stud_roll" required value="<?php echo $resultEditArray['stud_roll']?>" placeholder="Student Roll">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Registration No.</label>
-                        <input type="number" class="form-control" name="stud_reg" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                        <input type="number" class="form-control" name="stud_reg" required  value="<?php echo $resultEditArray['stud_reg']?>" placeholder="Registration">
                       </div>
                     </div>
                   </div>
@@ -173,8 +185,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_java" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_java" required  value="<?php echo $resultEditArray['sub_java']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -183,8 +194,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_cs" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_cs" required value="<?php echo $resultEditArray['sub_cs']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -193,8 +203,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_dataSt" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_dataSt" required required value="<?php echo $resultEditArray['sub_dataSt']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -203,8 +212,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_webDev" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_webDev" required required value="<?php echo $resultEditArray['sub_webDev']?>" placeholder="Mark">
                             </div>
                           </td>
                         </tr>
@@ -215,8 +223,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_dbM" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_dbM" required required value="<?php echo $resultEditArray['sub_dbM']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -225,8 +232,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_ecomM" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_ecomM" required required value="<?php echo $resultEditArray['sub_ecomM']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -235,8 +241,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_softDev" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_softDev" required required value="<?php echo $resultEditArray['sub_softDev']?>" placeholder="Mark">
                             </div>
                           </td>
 
@@ -245,8 +250,7 @@
                           </td>
                           <td class="p-3">
                             <div class="input-group input-group-outline mb-3">
-                              <label class="form-label">Number</label>
-                              <input type="number" class="form-control" name="sub_bussOrg" onfocus="focused(this)" onfocusout="defocused(this)" required>
+                              <input type="number" class="form-control" name="sub_bussOrg" required required value="<?php echo $resultEditArray['sub_bussOrg']?>" placeholder="Mark">
                             </div>
                           </td>
                         </tr>
